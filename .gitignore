@@ -81,4 +81,4 @@ example/.vscode
 example/Readme.md
 example/pubspec.lock
 example/test
-./pubspec.lock
+pubspec.lock
