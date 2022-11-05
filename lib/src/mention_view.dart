@@ -34,7 +34,7 @@ class FlutterMentions extends StatefulWidget {
       this.maxLengthEnforcement = MaxLengthEnforcement.none,
       this.onChanged,
       this.onEditingComplete,
-      this.onSubmitted,
+      this.onFieldSubmitted,
       this.enabled,
       this.cursorWidth = 2.0,
       this.cursorRadius,
@@ -50,7 +50,9 @@ class FlutterMentions extends StatefulWidget {
       this.appendSpaceOnAdd = true,
       this.hideSuggestionList = false,
       this.onSuggestionVisibleChanged,
-      this.textController})
+      this.textController,
+      this.autovalidateMode,
+      this.validator})
       : super(key: key);
 
   final bool hideSuggestionList;
@@ -179,8 +181,8 @@ class FlutterMentions extends StatefulWidget {
   /// {@macro flutter.widgets.editableText.onEditingComplete}
   final VoidCallback? onEditingComplete;
 
-  /// {@macro flutter.widgets.editableText.onSubmitted}
-  final ValueChanged<String>? onSubmitted;
+  /// {@macro flutter.widgets.editableText.onFieldSubmitted}
+  final ValueChanged<String>? onFieldSubmitted;
 
   /// If false the text field is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
@@ -205,7 +207,7 @@ class FlutterMentions extends StatefulWidget {
   ///
   /// This setting is only honored on iOS devices.
   ///
-  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
+  /// If unset, defaults to the brightness of [ThemeData.brightness].
   final Brightness? keyboardAppearance;
 
   /// {@macro flutter.widgets.editableText.scrollPadding}
@@ -244,6 +246,12 @@ class FlutterMentions extends StatefulWidget {
 
   /// Alternative for default text controller
   final AnnotationEditingController? textController;
+
+  /// {@macro flutter.widgets.FormField.autovalidateMode}
+  final AutovalidateMode? autovalidateMode;
+
+  /// {@macro flutter.widgets.FormField.validator}
+  final String? Function(String?)? validator;
 
   @override
   FlutterMentionsState createState() => FlutterMentionsState();
@@ -452,7 +460,7 @@ class FlutterMentionsState extends State<FlutterMentions> {
           children: [
             ...widget.leading,
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 maxLines: widget.maxLines,
                 minLines: widget.minLines,
                 maxLength: widget.maxLength,
@@ -478,7 +486,7 @@ class FlutterMentionsState extends State<FlutterMentions> {
                 expands: widget.expands,
                 onEditingComplete: widget.onEditingComplete,
                 onTap: widget.onTap,
-                onSubmitted: widget.onSubmitted,
+                onFieldSubmitted: widget.onFieldSubmitted,
                 enabled: widget.enabled,
                 enableInteractiveSelection: widget.enableInteractiveSelection,
                 enableSuggestions: widget.enableSuggestions,
@@ -486,6 +494,8 @@ class FlutterMentionsState extends State<FlutterMentions> {
                 scrollPadding: widget.scrollPadding,
                 scrollPhysics: widget.scrollPhysics,
                 controller: controller,
+                autovalidateMode: widget.autovalidateMode,
+                validator: widget.validator,
               ),
             ),
             ...widget.trailing,
