@@ -1,4 +1,4 @@
-library flutter_mentions;
+library flutter_input_mentions;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

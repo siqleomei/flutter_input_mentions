@@ -1,4 +1,4 @@
-part of flutter_mentions;
+part of flutter_input_mentions;
 
 class OptionList extends StatelessWidget {
   OptionList({

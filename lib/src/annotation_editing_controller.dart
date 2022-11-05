@@ -1,4 +1,4 @@
-part of flutter_mentions;
+part of flutter_input_mentions;
 
 /// A custom implementation of [TextEditingController] to support @ mention or other
 /// trigger based mentions.

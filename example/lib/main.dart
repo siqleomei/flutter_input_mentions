@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mentions/flutter_mentions.dart';
+import 'package:flutter_input_mentions/flutter_input_mentions.dart';
 
 void main() {
   runApp(MyApp());
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
           ),
           Container(
-            child: FlutterMentions(
+            child: FlutterInputMentions(
               textController: _textController,
               suggestionPosition: SuggestionPosition.Top,
               maxLines: 5,

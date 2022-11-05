@@ -1,7 +1,7 @@
-part of flutter_mentions;
+part of flutter_input_mentions;
 
-class FlutterMentions extends StatefulWidget {
-  FlutterMentions(
+class FlutterInputMentions extends StatefulWidget {
+  FlutterInputMentions(
       {required this.mentions,
       Key? key,
       this.defaultText,
@@ -254,10 +254,10 @@ class FlutterMentions extends StatefulWidget {
   final String? Function(String?)? validator;
 
   @override
-  FlutterMentionsState createState() => FlutterMentionsState();
+  FlutterInputMentionsState createState() => FlutterInputMentionsState();
 }
 
-class FlutterMentionsState extends State<FlutterMentions> {
+class FlutterInputMentionsState extends State<FlutterInputMentions> {
   AnnotationEditingController? controller;
   ValueNotifier<bool> showSuggestions = ValueNotifier(false);
   LengthMap? _selectedMention;
