@@ -1,12 +1,20 @@
 part of flutter_input_mentions;
 
+/// A mapping to store all annotations by your keys.
+/// e.g.
+/// {
+///   "@user": Annotation(...),
+///   "#hashtag": Annotation(...),
+/// }
+typedef AnnotationsMap = Map<String, Annotation>;
+
 /// A custom implementation of [TextEditingController] to support @ mention or other
 /// trigger based mentions.
 class AnnotationEditingController extends TextEditingController {
-  Map<String, Annotation> _mapping = {};
+  AnnotationsMap _mapping = {};
   String? _pattern;
 
-  void initialise(Map<String, Annotation> mapping) {
+  void initialise(AnnotationsMap mapping) {
     // Generate the Regex pattern for matching all the suggestions in one.
     _mapping = mapping;
     if (_mapping.keys.isNotEmpty) {
@@ -48,11 +56,11 @@ class AnnotationEditingController extends TextEditingController {
     return someVal;
   }
 
-  Map<String, Annotation> get mapping {
+  AnnotationsMap get mapping {
     return _mapping;
   }
 
-  set mapping(Map<String, Annotation> _mapping) {
+  set mapping(AnnotationsMap _mapping) {
     this._mapping = _mapping;
 
     var result = _mapping.keys.map((key) => RegExp.escape(key)).toList();

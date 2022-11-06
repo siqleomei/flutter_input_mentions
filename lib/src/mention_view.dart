@@ -263,14 +263,14 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
   LengthMap? _selectedMention;
   String _pattern = '';
 
-  Map<String, Annotation> mapToAnotation() {
-    final data = <String, Annotation>{};
+  AnnotationsMap mapToAnotation() {
+    final map = {} as AnnotationsMap;
 
     // Loop over all the mention items and generate a suggestions matching list
     widget.mentions.forEach((element) {
       // if matchAll is set to true add a general regex patteren to match with
       if (element.matchAll) {
-        data['${element.trigger}([A-Za-z0-9])*'] = Annotation(
+        map['${element.trigger}([A-Za-z0-9])*'] = Annotation(
           style: element.style,
           id: null,
           display: null,
@@ -281,7 +281,7 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
       }
 
       element.data.forEach(
-        (e) => data["${element.trigger}${e['display']}"] = e['style'] != null
+        (e) => map["${element.trigger}${e['display']}"] = e['style'] != null
             ? Annotation(
                 style: e['style'],
                 id: e['id'],
@@ -301,7 +301,7 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
       );
     });
 
-    return data;
+    return map;
   }
 
   void addMention(Map<String, dynamic> value, [Mention? list]) {
@@ -343,29 +343,33 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
         _pos = _pos + element.length + 1;
       });
 
-      final val = lengthMap.indexWhere((element) {
-        _pattern = widget.mentions.map((e) {
-          if (e.trigger.contains(r'[')) {
-            return '\\${e.trigger}';
-          }
-          return e.trigger;
-        }).join('|');
+      final index = _getMentionIndex(lengthMap, cursorPos);
 
-        var match = false;
-        match = element.end == cursorPos && element.str.toLowerCase().contains(RegExp(_pattern));
-        return match;
-      });
-
-      showSuggestions.value = val != -1;
+      showSuggestions.value = index != -1;
 
       if (widget.onSuggestionVisibleChanged != null) {
-        widget.onSuggestionVisibleChanged!(val != -1);
+        widget.onSuggestionVisibleChanged!(showSuggestions.value);
       }
 
       setState(() {
-        _selectedMention = val == -1 ? null : lengthMap[val];
+        _selectedMention = showSuggestions.value ? lengthMap[index] : null;
       });
     }
+  }
+
+  int _getMentionIndex(List<LengthMap> lengthMap, int cursorPos) {
+    return lengthMap.indexWhere((element) {
+      _pattern = widget.mentions.map((e) {
+        if (e.trigger.contains(r'[')) {
+          return '\\${e.trigger}';
+        }
+        return e.trigger;
+      }).join('|');
+
+      var match = false;
+      match = element.end == cursorPos && element.str.toLowerCase().contains(RegExp(_pattern));
+      return match;
+    });
   }
 
   void inputListeners() {
