@@ -1,5 +1,8 @@
 part of flutter_input_mentions;
 
+/// A map that represents a suggestion item in option list.
+typedef Suggestion = Map<String, dynamic>;
+
 class OptionList extends StatelessWidget {
   OptionList({
     required this.data,
@@ -9,11 +12,11 @@ class OptionList extends StatelessWidget {
     this.suggestionListDecoration,
   });
 
-  final Widget Function(Map<String, dynamic>)? suggestionBuilder;
+  final Widget Function(Suggestion)? suggestionBuilder;
 
-  final List<Map<String, dynamic>> data;
+  final List<Suggestion> data;
 
-  final Function(Map<String, dynamic>) onTap;
+  final Function(Suggestion) onTap;
 
   final double suggestionListHeight;
 
@@ -23,8 +26,7 @@ class OptionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return data.isNotEmpty
         ? Container(
-            decoration:
-                suggestionListDecoration ?? BoxDecoration(color: Colors.white),
+            decoration: suggestionListDecoration ?? BoxDecoration(color: Colors.white),
             constraints: BoxConstraints(
               maxHeight: suggestionListHeight,
               minHeight: 0,
@@ -34,9 +36,7 @@ class OptionList extends StatelessWidget {
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () {
-                    onTap(data[index]);
-                  },
+                  onTap: () => onTap(data[index]),
                   child: suggestionBuilder != null
                       ? suggestionBuilder!(data[index])
                       : Container(
