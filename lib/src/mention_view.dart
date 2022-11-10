@@ -52,7 +52,8 @@ class FlutterInputMentions extends StatefulWidget {
       this.onSuggestionVisibleChanged,
       this.textController,
       this.autovalidateMode,
-      this.validator})
+      this.validator,
+      this.loadingBuilder})
       : super(key: key);
 
   final bool hideSuggestionList;
@@ -253,6 +254,8 @@ class FlutterInputMentions extends StatefulWidget {
   /// {@macro flutter.widgets.FormField.validator}
   final String? Function(String?)? validator;
 
+  final LoadindBuilder? loadingBuilder;
+
   @override
   FlutterInputMentionsState createState() => FlutterInputMentionsState();
 }
@@ -264,7 +267,7 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
   String _pattern = '';
 
   AnnotationsMap mapToAnotation() {
-    final map = {} as AnnotationsMap;
+    final map = <String, Annotation>{};
 
     // Loop over all the mention items and generate a suggestions matching list
     widget.mentions.forEach((element) {
@@ -345,6 +348,7 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
 
       final index = _getMentionIndex(lengthMap, cursorPos);
 
+      // index != -1 will dispatch when the controller's text have a mention trigger
       showSuggestions.value = index != -1;
 
       if (widget.onSuggestionVisibleChanged != null) {
@@ -442,23 +446,30 @@ class FlutterInputMentionsState extends State<FlutterInputMentions> {
           valueListenable: showSuggestions,
           builder: (BuildContext context, bool show, Widget? child) {
             return show && !widget.hideSuggestionList
-                ? OptionList(
-                    suggestionListHeight: widget.suggestionListHeight,
-                    suggestionBuilder: list.suggestionBuilder,
-                    suggestionListDecoration: widget.suggestionListDecoration,
-                    data: list.data.where((element) {
-                      final ele = element['display'].toLowerCase();
-                      final str = _selectedMention!.str.toLowerCase().replaceAll(RegExp(_pattern), '');
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.loadingBuilder != null) widget.loadingBuilder!,
+                      OptionList(
+                        suggestionListHeight: widget.suggestionListHeight,
+                        suggestionBuilder: list.suggestionBuilder,
+                        suggestionListDecoration: widget.suggestionListDecoration,
+                        data: list.data.where((element) {
+                          final ele = element['display'].toLowerCase();
+                          final str = _selectedMention!.str.toLowerCase().replaceAll(RegExp(_pattern), '');
 
-                      return ele == str ? false : ele.contains(str);
-                    }).toList(),
-                    onTap: (value) {
-                      addMention(value, list);
-                      showSuggestions.value = false;
-                    },
+                          return ele == str ? false : ele.contains(str);
+                        }).toList(),
+                        onTap: (value) {
+                          addMention(value, list);
+                          showSuggestions.value = false;
+                        },
+                      ),
+                    ],
                   )
                 : Container();
           },
+          child: widget.loadingBuilder,
         ),
         child: Row(
           children: [
