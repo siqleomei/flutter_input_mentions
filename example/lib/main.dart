@@ -54,6 +54,9 @@ class _MyHomePageState extends State<MyHomePage> {
               maxLines: 5,
               minLines: 1,
               decoration: InputDecoration(hintText: 'hello'),
+              loadingBuilder: LoadindBuilder(
+                show: true,
+              ),
               mentions: [
                 Mention(
                     trigger: '@',
